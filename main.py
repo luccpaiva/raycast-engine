@@ -1,9 +1,8 @@
-import pygame as pg
 import sys
-from settings import *
 from map import *
 from player import *
 from raycasting import *
+from object_renderer import *
 
 
 class Game:
@@ -12,14 +11,18 @@ class Game:
         self.screen = pg.display.set_mode(RES)
         self.clock = pg.time.Clock()
         self.delta_time = 1
-        self.new_game()
 
-        # self.map = None
-        # self.player = None
+        self.map = None
+        self.player = None
+        self.object_renderer = None
+        self.raycasting = None
+
+        self.new_game()
 
     def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
+        self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
 
     def update(self):
@@ -31,10 +34,12 @@ class Game:
 
     def draw(self):
         self.screen.fill('black')
+        self.object_renderer.draw()
         self.map.draw()
         self.player.draw()
 
-    def check_events(self):
+    @staticmethod
+    def check_events():
         for event in pg.event.get():
             if event.type == pg.QUIT or (event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE):
                 pg.quit()
